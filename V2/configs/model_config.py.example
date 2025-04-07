@@ -1,0 +1,145 @@
+import os
+
+# 可以指定一个绝对路径，统一存放所有的Embedding和LLM模型。
+# 每个模型可以是一个单独的目录，也可以是某个目录下的二级子目录。
+# 如果模型目录名称和 MODEL_PATH 中的 key 或 value 相同，程序会自动检测加载，无需修改 MODEL_PATH 中的路径。
+MODEL_ROOT_PATH = ""
+
+# 选用的 Embedding 名称
+EMBEDDING_MODEL = "bge-large-zh"
+
+# Embedding 模型运行设备。设为 "auto" 会自动检测(会有警告)，也可手动设定为 "cuda","mps","cpu","xpu" 其中之一。
+EMBEDDING_DEVICE = "cuda"
+
+# 选用的reranker模型
+RERANKER_MODEL = "bge-reranker-large"
+# 是否启用reranker模型
+USE_RERANKER = False
+RERANKER_MAX_LENGTH = 1024
+
+# 如果需要在 EMBEDDING_MODEL 中增加自定义的关键字时配置
+EMBEDDING_KEYWORD_FILE = "keywords.txt"
+EMBEDDING_MODEL_OUTPUT_PATH = "output"
+
+# 要运行的 LLM 名称，可以包括本地模型和在线模型。列表中本地模型将在启动项目时全部加载。
+# 列表中第一个模型将作为 API 和 WEBUI 的默认模型。
+
+
+# LLM_MODELS = ["coalchat", "openai-api"]
+LLM_MODELS = ["coalchat"]               #初始模型加载目录      ,"百川7(测试用)"
+Agent_MODEL = None
+
+# LLM 模型运行设备。设为"auto"会自动检测(会有警告)，也可手动设定为 "cuda","mps","cpu","xpu" 其中之一。
+LLM_DEVICE = "cuda"
+
+HISTORY_LEN = 3
+
+#MAX_TOKENS = 2048
+MAX_TOKENS = 1024
+
+
+TEMPERATURE = 0.7
+
+ONLINE_LLM_MODEL = {
+    "openai-api": {
+        "model_name": "gpt-4",
+        "api_base_url": "https://api.openai.com/v1",
+        "api_key": "",
+        "openai_proxy": "",
+    },
+
+
+}
+
+# 在以下字典中修改属性值，以指定本地embedding模型存储位置。支持3种设置方法：
+# 1、将对应的值修改为模型绝对路径
+# 2、不修改此处的值（以 text2vec 为例）：
+#       2.1 如果{MODEL_ROOT_PATH}下存在如下任一子目录：
+#           - text2vec
+#           - GanymedeNil/text2vec-large-chinese
+#           - text2vec-large-chinese
+#       2.2 如果以上本地路径不存在，则使用huggingface模型
+
+MODEL_PATH = {
+    "embed_model": {
+        "ernie-tiny": "nghuyong/ernie-3.0-nano-zh",
+        "ernie-base": "nghuyong/ernie-3.0-base-zh",
+        "text2vec-base": "shibing624/text2vec-base-chinese",
+        "text2vec": "GanymedeNil/text2vec-large-chinese",
+        "text2vec-paraphrase": "shibing624/text2vec-base-chinese-paraphrase",
+        "text2vec-sentence": "shibing624/text2vec-base-chinese-sentence",
+        "text2vec-multilingual": "shibing624/text2vec-base-multilingual",
+        "text2vec-bge-large-chinese": "shibing624/text2vec-bge-large-chinese",
+        "m3e-small": "moka-ai/m3e-small",
+        "m3e-base": "moka-ai/m3e-base",
+        "m3e-large": "moka-ai/m3e-large",
+
+        "bge-small-zh": "BAAI/bge-small-zh",
+        "bge-base-zh": "BAAI/bge-base-zh",
+        "bge-large-zh": r"E:\20240503Chatchat\model\BAAI",
+        "bge-large-zh-noinstruct": "BAAI/bge-large-zh-noinstruct",
+        "bge-base-zh-v1.5": "BAAI/bge-base-zh-v1.5",
+        "bge-large-zh-v1.5": "BAAI/bge-large-zh-v1.5",
+
+        "bge-m3": "BAAI/bge-m3",
+
+        "piccolo-base-zh": "sensenova/piccolo-base-zh",
+        "piccolo-large-zh": "sensenova/piccolo-large-zh",
+        "nlp_gte_sentence-embedding_chinese-large": "damo/nlp_gte_sentence-embedding_chinese-large",
+        "text-embedding-ada-002": "your OPENAI_API_KEY",
+    },
+
+    "llm_model": {
+
+        "coalchat":"E:/coalchat-v1/LLaMA-Factory/models/qwen2.5_gptq_int4",                ##训练兵量化后的qwen2.5-14B模型
+
+        #"coalchat":"E:/coalchat-v1/LLaMA-Factory/models/qwen2.5_int4",                    ##仅量化后的qwen2.5*14B模型
+
+
+        #"coalchat":"E:/coalchat-v1/baichuan7",
+        #"百川7(测试用)":"E:/coalchat-v1/baichuan7",
+
+
+
+    },
+
+    "reranker": {
+        "bge-reranker-large": "BAAI/bge-reranker-large",
+        "bge-reranker-base": "BAAI/bge-reranker-base",
+    }
+}
+
+# 通常情况下不需要更改以下内容
+
+# nltk 模型存储路径
+NLTK_DATA_PATH = os.path.join(os.path.dirname(os.path.dirname(__file__)), "nltk_data")
+
+# 使用VLLM可能导致模型推理能力下降，无法完成Agent任务
+VLLM_MODEL_DICT = {
+    "chatglm2-6b": "THUDM/chatglm2-6b",
+    "chatglm2-6b-32k": "THUDM/chatglm2-6b-32k",
+    "chatglm3-6b": "THUDM/chatglm3-6b",
+    "chatglm3-6b-32k": "THUDM/chatglm3-6b-32k",
+    "coalchat":"/root/autodl-tmp/coalchat",
+
+    "Llama-2-7b-chat-hf": "meta-llama/Llama-2-7b-chat-hf",
+    "Llama-2-13b-chat-hf": "meta-llama/Llama-2-13b-chat-hf",
+    "Llama-2-70b-chat-hf": "meta-llama/Llama-2-70b-chat-hf",
+
+    "Qwen-1_8B-Chat": "Qwen/Qwen-1_8B-Chat",
+    "Qwen-7B-Chat": "Qwen/Qwen-7B-Chat",
+    "Qwen-14B-Chat": "Qwen/Qwen-14B-Chat",
+    "Qwen-72B-Chat": "Qwen/Qwen-72B-Chat",
+
+
+}
+
+SUPPORT_AGENT_MODEL = [
+    "openai-api",  # GPT4 模型
+    "qwen-api",  # Qwen Max模型
+    "zhipu-api",  # 智谱AI GLM4模型
+    "Qwen",  # 所有Qwen系列本地模型
+    "chatglm3-6b",
+    "internlm2-chat-20b",
+    "Orion-14B-Chat-Plugin",
+]
